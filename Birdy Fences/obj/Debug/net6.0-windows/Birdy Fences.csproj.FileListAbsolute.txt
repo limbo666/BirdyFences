@@ -18,3 +18,24 @@ C:\Users\ASUS PC\Documents\Visual Studio 2022\Projects\Birdy Fences\Birdy Fences
 C:\Users\ASUS PC\Documents\Visual Studio 2022\Projects\Birdy Fences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.genruntimeconfig.cache
 C:\Users\ASUS PC\Documents\Visual Studio 2022\Projects\Birdy Fences\Birdy Fences\obj\Debug\net6.0-windows\ref\Birdy Fences.dll
 C:\Users\ASUS PC\Documents\Visual Studio 2022\Projects\Birdy Fences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.g.resources
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.exe
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.deps.json
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.runtimeconfig.json
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.dll
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.pdb
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.csproj.AssemblyReference.cache
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\App.g.cs
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences_MarkupCompile.cache
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.g.resources
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.AssemblyInfoInputs.cache
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.AssemblyInfo.cs
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.csproj.CoreCompileInputs.cache
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fe.BE99758D.Up2Date
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.dll
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\refint\Birdy Fences.dll
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.pdb
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.genruntimeconfig.cache
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\ref\Birdy Fences.dll
+C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences_Content.g.cs
