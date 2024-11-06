@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Reflection.Metadata;
 using Birdy_Browser;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Birdy_Fences
 {
@@ -46,13 +47,28 @@ namespace Birdy_Fences
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            string userdir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            Directory.CreateDirectory(userdir + "\\Birdy Fences");
-            if (!File.Exists(userdir + "\\Birdy Fences\\fences.json"))
+
+
+            string exePath = Assembly.GetEntryAssembly().Location;
+            string exedir = Path.GetDirectoryName(exePath);
+
+          //  string exedir = System.Reflection.Assembly.GetEntryAssembly().Location;
+          //  string userdir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+         // string tt=  MessageBox(exedir);
+          //  if (Directory.Exists(exedir)) {  }
+          //  else
+         //   {
+         //       Directory.CreateDirectory(exedir + "\\Birdy Fences2");
+         //   }
+            
+          
+            if (!File.Exists(exedir + "\\fences.json"))
             {
-                File.WriteAllText(userdir + "\\Birdy Fences\\fences.json","[]");
+                // File.WriteAllText(exedir + "\\Birdy Fences\\fences.json","[]");
+                File.WriteAllText(exedir + "\\fences.json", "[{\"Title\":\"New Fence\",\"X\":20,\"Y\":20,\"Width\":200,\"Height\":200,\"ItemsType\":\"Data\",\"Items\":[]}]");
+
             }
-            dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(userdir + "\\Birdy Fences\\fences.json"));
+            dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(exedir + "\\fences.json"));
             void createFence(dynamic fence) {
                 DockPanel dp = new();
                 Border cborder = new() { Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)), CornerRadius = new CornerRadius(6), Child = dp };
@@ -67,13 +83,13 @@ namespace Birdy_Fences
                 miRF.Click += (sender, e) => {
                     fence.Remove();
                     win.Close();
-                    File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
                 miNF.Click += (sender, e) => {
                     Newtonsoft.Json.Linq.JObject fnc = new(new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"), new Newtonsoft.Json.Linq.JProperty("Width", 300), new Newtonsoft.Json.Linq.JProperty("Height", 150), new Newtonsoft.Json.Linq.JProperty("X", 0), new Newtonsoft.Json.Linq.JProperty("Y", 0), new Newtonsoft.Json.Linq.JProperty("ItemsType", "Data"), new Newtonsoft.Json.Linq.JProperty("Items", new Newtonsoft.Json.Linq.JArray()));
                     fencedata.Add(fnc);
                     createFence(fnc);
-                    File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
                 miNP.Click += (sender, e) => {
                     using var dialog = new System.Windows.Forms.FolderBrowserDialog
@@ -88,7 +104,7 @@ namespace Birdy_Fences
 
                         fencedata.Add(fnc);
                         createFence(fnc);
-                        File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                     }
                 };
                 WindowChrome.SetWindowChrome(win, new WindowChrome() { CaptionHeight = 0, ResizeBorderThickness = new Thickness(5) });
@@ -125,7 +141,7 @@ namespace Birdy_Fences
                         titletb.Visibility = Visibility.Collapsed;
                         titlelabel.Content = titletb.Text;
                         fence["Title"] = titletb.Text;
-                        File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
 
                     }
                     else if (e.Key == Key.Escape)
@@ -137,14 +153,14 @@ namespace Birdy_Fences
                 titlelabel.MouseUp += (object sender, MouseButtonEventArgs e) => {
                     fence["Y"] = win.Top;
                     fence["X"] = win.Left;
-                    File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
                 win.SizeChanged += (sender, e) => {
                     fence["Width"] = win.ActualWidth;
                     fence["Height"] = win.ActualHeight;
                     fence["Y"] = win.Top;
                     fence["X"] = win.Left;
-                    File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
                 DockPanel.SetDock(titlelabel, Dock.Top);
                 DockPanel.SetDock(titletb, Dock.Top);
@@ -162,7 +178,7 @@ namespace Birdy_Fences
                     {
                         icon.Remove();
                         wpcont.Children.Remove(sp);
-                        File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                     };
                     mn.Items.Add(miE);
                     mn.Items.Add(miM);
@@ -213,7 +229,7 @@ namespace Birdy_Fences
                             dynamic olddata = fence["Items"][lv.SelectedIndex];
                             fence["Items"][lv.SelectedIndex] = fence["Items"][id];
                             fence["Items"][id] = olddata;
-                            File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                            File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                             initcontent();
                             wwin.Close();
                         };
@@ -263,7 +279,7 @@ namespace Birdy_Fences
                                 fence["Items"][id]["DisplayIcon"] = tbDI.Text;
                                 ico.Source = new BitmapImage(new Uri(tbDN.Text));
                             }
-                            File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                            File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                             wwin.Close();
                         };
                         cnt.Children.Add(btn);
@@ -295,7 +311,7 @@ namespace Birdy_Fences
                         fence["Items"].Add(icon);
                         addicon(icon);
                     }
-                    File.WriteAllText(userdir + "\\Birdy Fences\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
                 void initcontent()
                 {
