@@ -6,10 +6,11 @@ BirdyFences is alternative to the StarDock's Fences originaly created by HAKANKO
 This fork changed to a few points:
 1. The json file moved to the same path with executable. 
 2. The first fence line is created on json file during the first execution.
-3. A program icon was added to the executable.
+3. A program icon was added to the executable. Updated on version 1.1
+4. Error handlers on: move action, program execution, empty json file.
+5. Added minimal about screen.
+6. Tray icon.
+7. Program exit option on right click and tray context menu.
 
-So the following guide is not applicable anymore
-~~In the first fence creation, you need to do it manually~~
-~~go to userdirectory\Birdy Fences and open fences.json~~
-~~put this to inside the file:~~
-~~`[{"Title":"New Fence","X":0,"Y":0,"Width":200,"Height":200,"ItemsType":"Data","Items":[]}]`~~
+
+
