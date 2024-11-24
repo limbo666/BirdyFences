@@ -18,6 +18,8 @@ using System.Reflection.Metadata;
 using Birdy_Browser;
 using System.Diagnostics;
 using System.Reflection;
+//using System.Windows.Forms;
+//using System.Drawing; // For Icon
 
 namespace Birdy_Fences
 {
@@ -25,7 +27,15 @@ namespace Birdy_Fences
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
+
+
     {
+
+
+        private System.Windows.Forms.NotifyIcon _trayIcon;
+
+        private System.Windows.Forms.NotifyIcon trayIcon;
+
         [DllImport("user32.dll", SetLastError = true)]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
@@ -45,30 +55,92 @@ namespace Birdy_Fences
             IntPtr.Zero, "SysListView32", "FolderView"
         );
 
+
+        
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+
+
+            // Initialize NotifyIcon
+         //   _trayIcon = new System.Windows.Forms.NotifyIcon
+            string mexePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            _trayIcon = new System.Windows.Forms.NotifyIcon
+
+            {
+                // Icon = new System.Drawing.Icon("logo2.ico"), // Path to your logo2.ico
+                //Visible = true
+                Icon = System.Drawing.Icon.ExtractAssociatedIcon(mexePath), // Use the executable's icon
+                Visible = true
+            };
+
+
+            // Create a new context menu for the NotifyIcon
+            var trayMenu = new System.Windows.Forms.ContextMenuStrip();
+
+            // Add "About" menu item
+            var aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem("About");
+            aboutMenuItem.Click += (s, ev) =>
+            {
+                System.Windows.MessageBox.Show("Birdy Fences version 1.1", "About", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            };
+            trayMenu.Items.Add(aboutMenuItem);
+
+            // Add "Exit" menu item
+            var exitMenuItem = new System.Windows.Forms.ToolStripMenuItem("Exit");
+            exitMenuItem.Click += (s, ev) => System.Windows.Application.Current.Shutdown();
+            trayMenu.Items.Add(exitMenuItem);
+
+            // Assign the context menu to the tray icon
+            _trayIcon.ContextMenuStrip = trayMenu;
+
 
 
             string exePath = Assembly.GetEntryAssembly().Location;
             string exedir = Path.GetDirectoryName(exePath);
 
-          //  string exedir = System.Reflection.Assembly.GetEntryAssembly().Location;
-          //  string userdir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-         // string tt=  MessageBox(exedir);
-          //  if (Directory.Exists(exedir)) {  }
-          //  else
-         //   {
-         //       Directory.CreateDirectory(exedir + "\\Birdy Fences2");
-         //   }
-            
-          
-            if (!File.Exists(exedir + "\\fences.json"))
-            {
-                // File.WriteAllText(exedir + "\\Birdy Fences\\fences.json","[]");
-                File.WriteAllText(exedir + "\\fences.json", "[{\"Title\":\"New Fence\",\"X\":20,\"Y\":20,\"Width\":200,\"Height\":200,\"ItemsType\":\"Data\",\"Items\":[]}]");
+            //  string exedir = System.Reflection.Assembly.GetEntryAssembly().Location;
+            //  string userdir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            // string tt=  MessageBox(exedir);
+            //  if (Directory.Exists(exedir)) {  }
+            //  else
+            //   {
+            //       Directory.CreateDirectory(exedir + "\\Birdy Fences2");
+            //   }
 
+
+            //if (!File.Exists(exedir + "\\fences.json"))
+            //{
+            //    // File.WriteAllText(exedir + "\\Birdy Fences\\fences.json","[]");
+            //    File.WriteAllText(exedir + "\\fences.json", "[{\"Title\":\"New Fence\",\"X\":20,\"Y\":20,\"Width\":200,\"Height\":200,\"ItemsType\":\"Data\",\"Items\":[]}]");
+
+            //}
+
+            string defaultJson = "[{\"Title\":\"New Fence\",\"X\":20,\"Y\":20,\"Width\":200,\"Height\":200,\"ItemsType\":\"Data\",\"Items\":[]}]";
+            string jsonFilePath = Path.Combine(exedir, "fences.json");
+
+            if (!File.Exists(jsonFilePath))
+            {
+                // File doesn't exist, write the default content
+                File.WriteAllText(jsonFilePath, defaultJson);
             }
-            dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(exedir + "\\fences.json"));
+            else
+            {
+                // File exists, check if it is empty or contains only []
+                string jsonContent = File.ReadAllText(jsonFilePath).Trim();
+                if (string.IsNullOrEmpty(jsonContent) || jsonContent == "[]" || jsonContent == "{}")
+                {
+                    // File is empty or has invalid/empty JSON, replace with default
+                    File.WriteAllText(jsonFilePath, defaultJson);
+                }
+            }
+
+            // Now read the JSON file into `fencedata`
+           dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(jsonFilePath));
+
+
+
+
+      //      dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(exedir + "\\fences.json"));
             void createFence(dynamic fence) {
                 DockPanel dp = new();
                 Border cborder = new() { Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)), CornerRadius = new CornerRadius(6), Child = dp };
@@ -79,6 +151,11 @@ namespace Birdy_Fences
                 cm.Items.Add(miNP);
                 MenuItem miRF = new() { Header = "Remove Fence" };
                 cm.Items.Add(miRF);
+                cm.Items.Add(new Separator());
+                MenuItem miXT = new() { Header = "Exit" };
+                cm.Items.Add(miXT);
+
+
                 Window win = new() { ContextMenu = cm, AllowDrop = true, AllowsTransparency = true, Background = Brushes.Transparent, Title = fence["Title"], ShowInTaskbar = false, WindowStyle = WindowStyle.None, Content = cborder, ResizeMode = ResizeMode.CanResize, Width = fence["Width"], Height = fence["Height"], Top = fence["Y"], Left = fence["X"] };
                 miRF.Click += (sender, e) => {
                     fence.Remove();
@@ -106,6 +183,17 @@ namespace Birdy_Fences
                         createFence(fnc);
                         File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                     }
+
+
+
+                };
+
+                miXT.Click += (sender, e) => {
+                    System.Environment.Exit(1);
+
+            
+
+
                 };
                 WindowChrome.SetWindowChrome(win, new WindowChrome() { CaptionHeight = 0, ResizeBorderThickness = new Thickness(5) });
                 Label titlelabel = new() { Content = (string)fence["Title"], Background = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0)), Foreground = Brushes.White, HorizontalContentAlignment = HorizontalAlignment.Center };
@@ -225,6 +313,7 @@ namespace Birdy_Fences
                         Button btn = new() { Content = "Move" };
                         cnt.Children.Add(btn);
                         btn.Click += (sender, e) => {
+                            try {  
                             int id = wpcont.Children.IndexOf(sp);
                             dynamic olddata = fence["Items"][lv.SelectedIndex];
                             fence["Items"][lv.SelectedIndex] = fence["Items"][id];
@@ -232,6 +321,14 @@ namespace Birdy_Fences
                             File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                             initcontent();
                             wwin.Close();
+                            }
+                            catch (Exception f)
+                            {
+                                //  Console.WriteLine(f.Message);
+                                MessageBox.Show(f.Message);
+
+                            }
+
                         };
                         wwin.ShowDialog();
                     };
@@ -291,7 +388,21 @@ namespace Birdy_Fences
                         UseShellExecute = true
                     };
                     new ClickEventAdder(sp).Click += (sender, e) => {
-                        p.Start();
+                     
+                      //  p.Start();
+
+                        try
+                        {
+                            p.Start();
+                        }
+                        catch (Exception f)
+                        {
+                            //  Console.WriteLine(f.Message);
+                            MessageBox.Show(f.Message);
+
+                        }
+
+
                     };
                     wpcont.Children.Add(sp);
                 };
@@ -351,6 +462,21 @@ namespace Birdy_Fences
                 createFence(fence);
             }
         }
+
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+           // _trayIcon.Dispose();
+         //   base.OnExit(e);
+            if (_trayIcon != null)
+            {
+                _trayIcon.Visible = false; // Hide the tray icon
+                _trayIcon.Dispose();      // Dispose of the NotifyIcon
+            }
+            base.OnExit(e);
+
+        }
+
     }
 
     internal static class IconUtilities
@@ -377,4 +503,6 @@ namespace Birdy_Fences
             return wpfBitmap;
         }
     }
+
+ 
 }
