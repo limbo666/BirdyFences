@@ -18,6 +18,7 @@ using System.Reflection.Metadata;
 using Birdy_Browser;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
 //using System.Windows.Forms;
 //using System.Drawing; // For Icon
 
@@ -55,14 +56,37 @@ namespace Birdy_Fences
             IntPtr.Zero, "SysListView32", "FolderView"
         );
 
+        private System.Drawing.Image LoadImageFromResources(string resourcePath)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(resourcePath))
+            {
+                if (stream == null)
+                {
+                    throw new FileNotFoundException($"Resource '{resourcePath}' not found.");
+                }
+                return System.Drawing.Image.FromStream(stream);
+            }
+        }
 
-        
+
+        //private void ListEmbeddedResources()
+        //{
+        //    var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+        //    foreach (var resource in resources)
+        //    {
+        //        // Console.WriteLine(resource);
+        //        System.Windows.MessageBox.Show(resource, "help", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+        //    }
+        //}
+
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
 
-
+         //   ListEmbeddedResources(); // Call the method to list resources
             // Initialize NotifyIcon
-         //   _trayIcon = new System.Windows.Forms.NotifyIcon
+            //   _trayIcon = new System.Windows.Forms.NotifyIcon
             string mexePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
             _trayIcon = new System.Windows.Forms.NotifyIcon
 
@@ -77,13 +101,172 @@ namespace Birdy_Fences
             // Create a new context menu for the NotifyIcon
             var trayMenu = new System.Windows.Forms.ContextMenuStrip();
 
-            // Add "About" menu item
             var aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem("About");
             aboutMenuItem.Click += (s, ev) =>
             {
-                System.Windows.MessageBox.Show("Birdy Fences version 1.1", "About", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                try
+                {
+                    using (var frmAbout = new System.Windows.Forms.Form())
+                    {
+                        // Set up the form
+                        frmAbout.Text = "About Birdy Fences";
+                        frmAbout.Size = new System.Drawing.Size(300, 400); // Adjust size
+                        frmAbout.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                        frmAbout.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+                        frmAbout.MaximizeBox = false;
+                        frmAbout.MinimizeBox = false;
+
+                        // Set the form icon to match the executable icon
+                        string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                        frmAbout.Icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+
+                        // Create a TableLayoutPanel for central alignment
+                        var layoutPanel = new System.Windows.Forms.TableLayoutPanel
+                        {
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            ColumnCount = 1,
+                            RowCount = 4, // Number of items
+                            AutoSize = true,
+                            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink,
+                        };
+                        layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+                        // Add a PictureBox for the image
+                        var pictureBox = new System.Windows.Forms.PictureBox
+                        {
+                            Image = LoadImageFromResources("Birdy_Fences.Resources.logo1.png"), // Correct resource path
+                            SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom,
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            Height = 150 // Adjust size if needed
+                        };
+                        layoutPanel.Controls.Add(pictureBox);
+
+                        // Add label for "BirdyFences"
+                        var labelBirdyFences = new System.Windows.Forms.Label
+                        {
+                            Text = "BirdyFences",
+                            Font = new System.Drawing.Font("Arial", 14, System.Drawing.FontStyle.Bold),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                            Dock = System.Windows.Forms.DockStyle.Fill
+                        };
+                        layoutPanel.Controls.Add(labelBirdyFences);
+
+                        // Add label for version
+                        var labelVersion = new System.Windows.Forms.Label
+                        {
+                            Text = "v 1.2",
+                            Font = new System.Drawing.Font("Arial", 10),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                            Dock = System.Windows.Forms.DockStyle.Fill
+                        };
+                        layoutPanel.Controls.Add(labelVersion);
+
+                        // Add label for fork information
+                        var labelForkInfo = new System.Windows.Forms.Label
+                        {
+                            Text = "BirdyFences is an open source alternative\n to the StarDock's Fences\n originaly created by HAKANKOKCU.\n \nThis fork maintained by limbo666\n It is slighlty improved and more stable",
+                            Font = new System.Drawing.Font("Arial", 8),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                            Dock = System.Windows.Forms.DockStyle.Fill
+                        };
+                        layoutPanel.Controls.Add(labelForkInfo);
+
+                        // Add the layout panel to the form
+                        frmAbout.Controls.Add(layoutPanel);
+
+                        // Show the form as a modal dialog
+                        frmAbout.ShowDialog();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    System.Windows.Forms.MessageBox.Show($"An error occurred: {ex.Message}", "Error",
+                        System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                }
             };
             trayMenu.Items.Add(aboutMenuItem);
+
+
+            //var aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem("About");
+            //aboutMenuItem.Click += (s, ev) =>
+            //{
+            //    try
+            //    {
+            //        using (var frmAbout = new System.Windows.Forms.Form())
+            //        {
+            //            // Set up the form
+            //            frmAbout.Text = "About Birdy Fences";
+            //            frmAbout.Size = new System.Drawing.Size(300, 400); // Customize size as needed
+            //            frmAbout.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            //            frmAbout.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            //            frmAbout.MaximizeBox = false;
+            //            frmAbout.MinimizeBox = false;
+
+            //            // Add a PictureBox for the image
+            //            var pictureBox = new System.Windows.Forms.PictureBox
+            //            {
+
+            //                //Image = Properties.Resources.logo1, // Use logo1.png from resources
+            //                //SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage,
+            //                //Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 150) / 2, 20), // Center horizontally
+            //                //Size = new System.Drawing.Size(150, 150) // Adjust size as needed
+
+            //                Image = LoadImageFromResources("Birdy_Fences.Resources.logo1.png"),// Adjust the resource path
+            //                SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom, // Use Zoom to maintain aspect ratio
+            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 150) / 2, 20), // Center horizontally
+            //                Size = new System.Drawing.Size(150, 150) // Adjust size as needed
+
+            //            };
+            //            frmAbout.Controls.Add(pictureBox);
+
+            //            // Add label for "BirdyFences"
+            //            var labelBirdyFences = new System.Windows.Forms.Label
+            //            {
+            //                Text = "BirdyFences",
+            //                Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold),
+            //                AutoSize = true,
+            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 100) / 2, 180) // Adjust position
+            //            };
+            //            frmAbout.Controls.Add(labelBirdyFences);
+
+            //            // Add label for version
+            //            var labelVersion = new System.Windows.Forms.Label
+            //            {
+            //                Text = "v 1.2",
+            //                Font = new System.Drawing.Font("Arial", 8),
+            //                AutoSize = true,
+            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 50) / 2, 210) // Adjust position
+            //            };
+            //            frmAbout.Controls.Add(labelVersion);
+
+            //            // Add label for fork information
+            //            var labelForkInfo = new System.Windows.Forms.Label
+            //            {
+            //                Text = "this fork maintained by limbo666",
+            //                Font = new System.Drawing.Font("Arial", 8),
+            //                AutoSize = true,
+            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 200) / 2, 240) // Adjust position
+            //            };
+            //            frmAbout.Controls.Add(labelForkInfo);
+
+            //            // Show the form as a modal dialog
+            //            frmAbout.ShowDialog();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Handle exceptions
+            //        System.Windows.Forms.MessageBox.Show($"An error occurred: {ex.Message}", "Error",
+            //            System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            //    }
+            //};
+            //trayMenu.Items.Add(aboutMenuItem);
+
+
+
+
+
 
             // Add "Exit" menu item
             var exitMenuItem = new System.Windows.Forms.ToolStripMenuItem("Exit");

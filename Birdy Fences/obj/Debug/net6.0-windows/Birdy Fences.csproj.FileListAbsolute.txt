@@ -39,3 +39,27 @@ C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Bi
 C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.genruntimeconfig.cache
 C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\ref\Birdy Fences.dll
 C:\Users\Nikos\Desktop\BirdyFences-main\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences_Content.g.cs
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.exe
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.deps.json
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.runtimeconfig.json
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.dll
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Birdy Fences.pdb
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.csproj.AssemblyReference.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\App.g.cs
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences_Content.g.cs
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences_MarkupCompile.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.g.resources
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.GeneratedMSBuildEditorConfig.editorconfig
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.AssemblyInfoInputs.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.AssemblyInfo.cs
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.csproj.CoreCompileInputs.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.sourcelink.json
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fe.BE99758D.Up2Date
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.dll
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\refint\Birdy Fences.dll
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.pdb
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.genruntimeconfig.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\ref\Birdy Fences.dll
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy Fences.csproj.GenerateResource.cache
+D:\Nextcloud\Development\VCS14\Birdy Fences\BirdyFences\Birdy Fences\obj\Debug\net6.0-windows\Birdy_Fences.Properties.Resources.resources
