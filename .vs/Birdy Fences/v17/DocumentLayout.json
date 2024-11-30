@@ -47,15 +47,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Birdy Fences",
+              "Title": "Birdy Fences.csproj",
               "DocumentMoniker": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\Birdy Fences.csproj",
               "RelativeDocumentMoniker": "Birdy Fences\\Birdy Fences.csproj",
               "ToolTip": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\Birdy Fences.csproj",
               "RelativeToolTip": "Birdy Fences\\Birdy Fences.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-30T11:53:12.124Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-30T11:53:12.124Z"
             },
             {
               "$type": "Document",
@@ -66,8 +65,7 @@
               "ToolTip": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\Birdy Fences.csproj",
               "RelativeToolTip": "Birdy Fences\\Birdy Fences.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-30T12:02:11.19Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-30T12:02:11.19Z"
             },
             {
               "$type": "Document",
@@ -78,8 +76,7 @@
               "ToolTip": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\App.xaml",
               "RelativeToolTip": "Birdy Fences\\App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-11-29T21:38:25.444Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T21:38:25.444Z"
             },
             {
               "$type": "Document",
@@ -102,8 +99,7 @@
               "ToolTip": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\Properties\\Resources.resx",
               "RelativeToolTip": "Birdy Fences\\Properties\\Resources.resx",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2024-11-29T21:38:18.678Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T21:38:18.678Z"
             },
             {
               "$type": "Document",
@@ -113,7 +109,7 @@
               "RelativeDocumentMoniker": "Birdy Fences\\App.xaml.cs",
               "ToolTip": "D:\\Nextcloud\\Development\\VCS14\\Birdy Fences\\BirdyFences\\Birdy Fences\\App.xaml.cs",
               "RelativeToolTip": "Birdy Fences\\App.xaml.cs",
-              "ViewState": "AQIAADsAAAAAAAAAAAAqwFAAAAALAAAA",
+              "ViewState": "AQIAAIkBAAAAAAAAAAAQwJMBAABBAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-29T21:13:21.28Z",
               "EditorCaption": ""

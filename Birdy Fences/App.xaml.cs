@@ -188,83 +188,6 @@ namespace Birdy_Fences
             trayMenu.Items.Add(aboutMenuItem);
 
 
-            //var aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem("About");
-            //aboutMenuItem.Click += (s, ev) =>
-            //{
-            //    try
-            //    {
-            //        using (var frmAbout = new System.Windows.Forms.Form())
-            //        {
-            //            // Set up the form
-            //            frmAbout.Text = "About Birdy Fences";
-            //            frmAbout.Size = new System.Drawing.Size(300, 400); // Customize size as needed
-            //            frmAbout.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            //            frmAbout.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            //            frmAbout.MaximizeBox = false;
-            //            frmAbout.MinimizeBox = false;
-
-            //            // Add a PictureBox for the image
-            //            var pictureBox = new System.Windows.Forms.PictureBox
-            //            {
-
-            //                //Image = Properties.Resources.logo1, // Use logo1.png from resources
-            //                //SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage,
-            //                //Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 150) / 2, 20), // Center horizontally
-            //                //Size = new System.Drawing.Size(150, 150) // Adjust size as needed
-
-            //                Image = LoadImageFromResources("Birdy_Fences.Resources.logo1.png"),// Adjust the resource path
-            //                SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom, // Use Zoom to maintain aspect ratio
-            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 150) / 2, 20), // Center horizontally
-            //                Size = new System.Drawing.Size(150, 150) // Adjust size as needed
-
-            //            };
-            //            frmAbout.Controls.Add(pictureBox);
-
-            //            // Add label for "BirdyFences"
-            //            var labelBirdyFences = new System.Windows.Forms.Label
-            //            {
-            //                Text = "BirdyFences",
-            //                Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold),
-            //                AutoSize = true,
-            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 100) / 2, 180) // Adjust position
-            //            };
-            //            frmAbout.Controls.Add(labelBirdyFences);
-
-            //            // Add label for version
-            //            var labelVersion = new System.Windows.Forms.Label
-            //            {
-            //                Text = "v 1.2",
-            //                Font = new System.Drawing.Font("Arial", 8),
-            //                AutoSize = true,
-            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 50) / 2, 210) // Adjust position
-            //            };
-            //            frmAbout.Controls.Add(labelVersion);
-
-            //            // Add label for fork information
-            //            var labelForkInfo = new System.Windows.Forms.Label
-            //            {
-            //                Text = "this fork maintained by limbo666",
-            //                Font = new System.Drawing.Font("Arial", 8),
-            //                AutoSize = true,
-            //                Location = new System.Drawing.Point((frmAbout.ClientSize.Width - 200) / 2, 240) // Adjust position
-            //            };
-            //            frmAbout.Controls.Add(labelForkInfo);
-
-            //            // Show the form as a modal dialog
-            //            frmAbout.ShowDialog();
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        // Handle exceptions
-            //        System.Windows.Forms.MessageBox.Show($"An error occurred: {ex.Message}", "Error",
-            //            System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-            //    }
-            //};
-            //trayMenu.Items.Add(aboutMenuItem);
-
-
-
 
 
 
@@ -470,16 +393,42 @@ namespace Birdy_Fences
                     catch
                     { }
                     sp.Children.Add(ico);
-                    TextBlock lbl = new() { TextWrapping = TextWrapping.Wrap, TextTrimming = TextTrimming.CharacterEllipsis, HorizontalAlignment = HorizontalAlignment.Center, Foreground = Brushes.White };
-                    lbl.MaxHeight = (lbl.FontSize * 1.5) + (lbl.Margin.Top * 2);
-                    if (icon["DisplayName"] == null)
+                    //TextBlock lbl = new() { TextWrapping = TextWrapping.Wrap, TextTrimming = TextTrimming.CharacterEllipsis, HorizontalAlignment = HorizontalAlignment.Center, Foreground = Brushes.White };
+                    //lbl.MaxHeight = (lbl.FontSize * 1.5) + (lbl.Margin.Top * 2);
+                    //if (icon["DisplayName"] == null)
+                    //{
+                    //    lbl.Text = new FileInfo((string)icon["Filename"]).Name;
+                    //}
+                    //else
+                    //{
+                    //    lbl.Text = (string)icon["DisplayName"];
+                    //}
+                    TextBlock lbl = new()
                     {
-                        lbl.Text = new FileInfo((string)icon["Filename"]).Name;
-                    }
-                    else
+                        TextWrapping = TextWrapping.Wrap, // Allow text to wrap
+                        TextTrimming = TextTrimming.None, // Disable trimming (truncate) of text  // old value TextTrimming = TextTrimming.CharacterEllipsis
+                        HorizontalAlignment = HorizontalAlignment.Center, // Center align the text
+                        Foreground = Brushes.White,
+                        MaxWidth = double.MaxValue, // Allow text to expand without restriction
+                        Width = double.NaN, // Allow the TextBlock to stretch as needed
+                        TextAlignment = TextAlignment.Center // Ensure it's centered within its space
+                    };
+                    //  lbl.MaxWidth = 160; // Adjust this to your desired max width. maybe is not needed
+
+
+                    //  lbl.Text = (icon["DisplayName"] == null) ? new FileInfo((string)icon["Filename"]).Name : (string)icon["DisplayName"]; //replaced with the one below
+
+                    // Limit the text to 20 characters similar to windows lenght
+                    // First remove the file extension using Path.GetFileNameWithoutExtension
+                    string displayText = (icon["DisplayName"] == null) ? Path.GetFileNameWithoutExtension((string)icon["Filename"]) : (string)icon["DisplayName"];
+                      //   Setlimit  the              
+                    if (displayText.Length > 20)
                     {
-                        lbl.Text = (string)icon["DisplayName"];
+                        displayText = displayText.Substring(0, 20) + "..."; // Add ellipsis
                     }
+
+                    lbl.Text = displayText;
+
                     sp.Children.Add(lbl);
                     miM.Click += (sender, e) => {
                         StackPanel cnt = new();

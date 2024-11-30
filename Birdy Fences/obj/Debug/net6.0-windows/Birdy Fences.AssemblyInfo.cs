@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Birdy Fences")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.1")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1+fca5bde594f43cb51b500edc9cc65b95f6ec73e0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1+fec9653894d560970b2e23cb815d990ea4dc2529")]
 [assembly: System.Reflection.AssemblyProductAttribute("Birdy Fences")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Birdy Fences")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1")]
