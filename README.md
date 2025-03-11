@@ -1,10 +1,11 @@
 # BirdyFences
 ![logo1](https://github.com/user-attachments/assets/279284fd-2ba2-4175-b32b-f5868cc70c7b)
 
-BirdyFences is alternative to the StarDock's Fences originaly created by HAKANKOKCU
+BirdyFences is alternative to the StarDock's Fences originaly created by HAKANKOKCU <br>
+This fork has been **significantly enhanced and optimized** for better performance and stability.
 
-## Changes
-This fork changed to a few points:
+## Changes in v1.1
+
 1. The json file moved to the same path with executable. 
 2. The first fence line is created on json file during the first execution.
 3. A program icon was added to the executable. The icon updated on version 1.1
@@ -13,7 +14,16 @@ This fork changed to a few points:
 6. Tray icon.
 7. Program exit option on right click and tray context menu.
 
-## Downlaod
+## Changes in v1.3
+
+1. Better management on new fence creation. The fence is now created where the mouse is located.
+2. Shortcuts are not relying in the existence of original shortcust dropped into the fence, allowing the user to get rid of the originals
+3. Shortcut execution arguments (if any) are detected and replicated.
+4. Error handlers added to detect target type.
+5. Added visual effects on icon click and icon removal.
+
+
+## Download
 Get the latest release from [Release pages](https://github.com/limbo666/BirdyFences/releases) 
 
 
