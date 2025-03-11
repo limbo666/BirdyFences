@@ -80,9 +80,127 @@ namespace Birdy_Fences
         //    }
         //}
 
+        //private System.Windows.Shapes.Path CreateStar()
+        //{
+        //    return new System.Windows.Shapes.Path
+        //    {
+        //        Data = Geometry.Parse("M 0,0 L 10,15 L 20,0 L 5,10 L 15,10 Z"), // Star geometry
+        //        Fill = System.Windows.Media.Brushes.Yellow, // Star color
+        //        Opacity = 0, // Start fully transparent
+        //        RenderTransformOrigin = new System.Windows.Point(0.5, 0.5), // Center the transform
+        //        RenderTransform = new TransformGroup
+        //        {
+        //            Children = new System.Windows.Media.TransformCollection
+        //    {
+        //        new ScaleTransform(1, 1), // Initial scale
+        //        new RotateTransform(0) // Initial rotation
+        //    }
+        //        }
+        //    };
+        //}
+
+        //private void AddSparkleEffect(System.Windows.Controls.StackPanel sp)
+        //{
+        //    // Create a Canvas to hold the stars
+        //    var sparkleCanvas = new Canvas();
+
+        //    // Create multiple stars
+        //    var random = new Random();
+        //    for (int i = 0; i < 10; i++) // Create 10 stars
+        //    {
+        //        var star = CreateStar();
+
+        //        // Position the star randomly around the icon
+        //        Canvas.SetLeft(star, random.Next(-20, 20)); // Random X offset
+        //        Canvas.SetTop(star, random.Next(-20, 20)); // Random Y offset
+
+        //        // Add the star to the Canvas
+        //        sparkleCanvas.Children.Add(star);
+
+        //        // Animate the star
+        //        AnimateStar(star, random);
+        //    }
+
+        //    // Add the Canvas to the StackPanel (sp)
+        //    sp.Children.Add(sparkleCanvas);
+
+        //    // Remove the sparkle effect after the animation completes
+        //    var timer = new System.Windows.Threading.DispatcherTimer
+        //    {
+        //        Interval = TimeSpan.FromMilliseconds(1000) // Match the animation duration
+        //    };
+        //    timer.Tick += (s, ev) =>
+        //    {
+        //        timer.Stop();
+        //        sp.Children.Remove(sparkleCanvas); // Remove the sparkle effect
+        //    };
+        //    timer.Start();
+        //}
+
+        //private void AnimateStar(System.Windows.Shapes.Path star, Random random)
+        //{
+        //    // Opacity animation (fade in and out)
+        //    var opacityAnimation = new System.Windows.Media.Animation.DoubleAnimation
+        //    {
+        //        From = 0, // Start fully transparent
+        //        To = 1, // Fully visible
+        //        Duration = TimeSpan.FromMilliseconds(200), // Fade in duration
+        //        AutoReverse = true, // Fade out after fading in
+        //        FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+        //    };
+
+        //    // Scale animation (grow and shrink)
+        //    var scaleAnimation = new System.Windows.Media.Animation.DoubleAnimation
+        //    {
+        //        From = 1, // Start at normal size
+        //        To = 2, // Grow to 200% size
+        //        Duration = TimeSpan.FromMilliseconds(500), // Animation duration
+        //        AutoReverse = true, // Shrink back to normal size
+        //        FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+        //    };
+
+        //    // Rotate animation (spin)
+        //    var rotateAnimation = new System.Windows.Media.Animation.DoubleAnimation
+        //    {
+        //        From = 0, // Start at 0 degrees
+        //        To = 360, // Rotate 360 degrees
+        //        Duration = TimeSpan.FromMilliseconds(1000), // Animation duration
+        //        FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+        //    };
+
+        //    // Translate animation (move outward)
+        //    var translateAnimationX = new System.Windows.Media.Animation.DoubleAnimation
+        //    {
+        //        From = 0, // Start at the center
+        //        To = random.Next(-50, 50), // Move outward randomly
+        //        Duration = TimeSpan.FromMilliseconds(1000), // Animation duration
+        //        FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+        //    };
+
+        //    var translateAnimationY = new System.Windows.Media.Animation.DoubleAnimation
+        //    {
+        //        From = 0, // Start at the center
+        //        To = random.Next(-50, 50), // Move outward randomly
+        //        Duration = TimeSpan.FromMilliseconds(1000), // Animation duration
+        //        FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+        //    };
+
+        //    // Apply the animations to the star
+        //    star.BeginAnimation(System.Windows.UIElement.OpacityProperty, opacityAnimation);
+        //    ((TransformGroup)star.RenderTransform).Children[0].BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+        //    ((TransformGroup)star.RenderTransform).Children[0].BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+        //    ((TransformGroup)star.RenderTransform).Children[1].BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+        //    star.RenderTransform.BeginAnimation(TranslateTransform.XProperty, translateAnimationX);
+        //    star.RenderTransform.BeginAnimation(TranslateTransform.YProperty, translateAnimationY);
+        //}
+
+
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+
+
+
 
          //   ListEmbeddedResources(); // Call the method to list resources
             // Initialize NotifyIcon
@@ -109,8 +227,8 @@ namespace Birdy_Fences
                     using (var frmAbout = new System.Windows.Forms.Form())
                     {
                         // Set up the form
-                        frmAbout.Text = "About Birdy Fences";
-                        frmAbout.Size = new System.Drawing.Size(300, 400); // Adjust size
+                        frmAbout.Text = "About BirdyFences";
+                        frmAbout.Size = new System.Drawing.Size(400, 450); // Adjust size
                         frmAbout.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
                         frmAbout.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
                         frmAbout.MaximizeBox = false;
@@ -125,9 +243,10 @@ namespace Birdy_Fences
                         {
                             Dock = System.Windows.Forms.DockStyle.Fill,
                             ColumnCount = 1,
-                            RowCount = 4, // Number of items
+                            RowCount = 7, // Number of items
                             AutoSize = true,
                             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink,
+                            Padding = new System.Windows.Forms.Padding(20) // Add padding
                         };
                         layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 
@@ -137,39 +256,91 @@ namespace Birdy_Fences
                             Image = LoadImageFromResources("Birdy_Fences.Resources.logo1.png"), // Correct resource path
                             SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom,
                             Dock = System.Windows.Forms.DockStyle.Fill,
-                            Height = 150 // Adjust size if needed
+                            Height = 100 // Adjust size if needed
                         };
                         layoutPanel.Controls.Add(pictureBox);
 
-                        // Add label for "BirdyFences"
-                        var labelBirdyFences = new System.Windows.Forms.Label
+                        // Add label for "Birdy Fences" title
+                        var labelTitle = new System.Windows.Forms.Label
                         {
-                            Text = "BirdyFences",
+                            Text = "Birdy Fences",
                             Font = new System.Drawing.Font("Arial", 14, System.Drawing.FontStyle.Bold),
                             TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                            Dock = System.Windows.Forms.DockStyle.Fill
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            AutoSize = true
                         };
-                        layoutPanel.Controls.Add(labelBirdyFences);
+                        layoutPanel.Controls.Add(labelTitle);
 
                         // Add label for version
                         var labelVersion = new System.Windows.Forms.Label
                         {
-                            Text = "v 1.2",
-                            Font = new System.Drawing.Font("Arial", 10),
+                            Text = "ver 1.3",
+                            Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold),
                             TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                            Dock = System.Windows.Forms.DockStyle.Fill
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            AutoSize = true
                         };
                         layoutPanel.Controls.Add(labelVersion);
 
-                        // Add label for fork information
-                        var labelForkInfo = new System.Windows.Forms.Label
+                        // Add label for the main text
+                        var labelMainText = new System.Windows.Forms.Label
                         {
-                            Text = "BirdyFences is an open source alternative\n to the StarDock's Fences\n originaly created by HAKANKOKCU.\n \nThis fork maintained by limbo666\n It is slighlty improved and more stable",
-                            Font = new System.Drawing.Font("Arial", 8),
+                            Text = "BirdyFences is an open-source alternative to StarDock's Fences, originally created by HAKANKOKCU.\n\nThis fork, maintained by limbo666, has been significantly enhanced and optimized for better performance and stability.",
+                            Font = new System.Drawing.Font("Arial", 10),
                             TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                            Dock = System.Windows.Forms.DockStyle.Fill
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            AutoSize = true
                         };
-                        layoutPanel.Controls.Add(labelForkInfo);
+                        layoutPanel.Controls.Add(labelMainText);
+
+                        // Add a horizontal line
+                        var horizontalLine = new System.Windows.Forms.Label
+                        {
+                            BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D,
+                            Height = 2,
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            Margin = new System.Windows.Forms.Padding(10, 10, 10, 10) // Add padding
+                        };
+                        layoutPanel.Controls.Add(horizontalLine);
+
+                        // Add label for the GitHub text
+                        var labelGitHubText = new System.Windows.Forms.Label
+                        {
+                            Text = "Please visit GitHub for news, updates, and bug reports.",
+                            Font = new System.Drawing.Font("Arial", 9),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            AutoSize = true
+                        };
+                        layoutPanel.Controls.Add(labelGitHubText);
+
+                        // Add a hyperlink to GitHub
+                        var linkLabelGitHub = new System.Windows.Forms.LinkLabel
+                        {
+                            Text = "https://github.com/limbo666/BirdyFences",
+                            Font = new System.Drawing.Font("Arial", 9),
+                            TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                            Dock = System.Windows.Forms.DockStyle.Fill,
+                            AutoSize = true
+                        };
+                        linkLabelGitHub.LinkClicked += (sender, e) =>
+                        {
+                            try
+                            {
+                                // Open the GitHub link in the default browser
+                                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                                {
+                                    FileName = "https://github.com/limbo666/BirdyFences",
+                                    UseShellExecute = true // This ensures the URL is opened in the default browser
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                // Handle any errors (e.g., log or show a message)
+                                MessageBox.Show($"Error opening GitHub link: {ex.Message}");
+                            }
+                        };
+                        layoutPanel.Controls.Add(linkLabelGitHub);
 
                         // Add the layout panel to the form
                         frmAbout.Controls.Add(layoutPanel);
@@ -177,6 +348,77 @@ namespace Birdy_Fences
                         // Show the form as a modal dialog
                         frmAbout.ShowDialog();
                     }
+                    //using (var frmAbout = new System.Windows.Forms.Form())
+                    //{
+                    //    // Set up the form
+                    //    frmAbout.Text = "About Birdy Fences";
+                    //    frmAbout.Size = new System.Drawing.Size(300, 400); // Adjust size
+                    //    frmAbout.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                    //    frmAbout.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+                    //    frmAbout.MaximizeBox = false;
+                    //    frmAbout.MinimizeBox = false;
+
+                    //    // Set the form icon to match the executable icon
+                    //    string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    //    frmAbout.Icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+
+                    //    // Create a TableLayoutPanel for central alignment
+                    //    var layoutPanel = new System.Windows.Forms.TableLayoutPanel
+                    //    {
+                    //        Dock = System.Windows.Forms.DockStyle.Fill,
+                    //        ColumnCount = 1,
+                    //        RowCount = 4, // Number of items
+                    //        AutoSize = true,
+                    //        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink,
+                    //    };
+                    //    layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+                    //    // Add a PictureBox for the image
+                    //    var pictureBox = new System.Windows.Forms.PictureBox
+                    //    {
+                    //        Image = LoadImageFromResources("Birdy_Fences.Resources.logo1.png"), // Correct resource path
+                    //        SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom,
+                    //        Dock = System.Windows.Forms.DockStyle.Fill,
+                    //        Height = 150 // Adjust size if needed
+                    //    };
+                    //    layoutPanel.Controls.Add(pictureBox);
+
+                    //    // Add label for "BirdyFences"
+                    //    var labelBirdyFences = new System.Windows.Forms.Label
+                    //    {
+                    //        Text = "BirdyFences",
+                    //        Font = new System.Drawing.Font("Arial", 14, System.Drawing.FontStyle.Bold),
+                    //        TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                    //        Dock = System.Windows.Forms.DockStyle.Fill
+                    //    };
+                    //    layoutPanel.Controls.Add(labelBirdyFences);
+
+                    //    // Add label for version
+                    //    var labelVersion = new System.Windows.Forms.Label
+                    //    {
+                    //        Text = "v 1.2",
+                    //        Font = new System.Drawing.Font("Arial", 10),
+                    //        TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                    //        Dock = System.Windows.Forms.DockStyle.Fill
+                    //    };
+                    //    layoutPanel.Controls.Add(labelVersion);
+
+                    //    // Add label for fork information
+                    //    var labelForkInfo = new System.Windows.Forms.Label
+                    //    {
+                    //        Text = "BirdyFences is an open source alternative\n to the StarDock's Fences\n originaly created by HAKANKOKCU.\n \nThis fork maintained by limbo666\n It is slighlty improved and more stable",
+                    //        Font = new System.Drawing.Font("Arial", 8),
+                    //        TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                    //        Dock = System.Windows.Forms.DockStyle.Fill
+                    //    };
+                    //    layoutPanel.Controls.Add(labelForkInfo);
+
+                    //    // Add the layout panel to the form
+                    //    frmAbout.Controls.Add(layoutPanel);
+
+                    //    // Show the form as a modal dialog
+                    //    frmAbout.ShowDialog();
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -263,36 +505,125 @@ namespace Birdy_Fences
 
 
                 Window win = new() { ContextMenu = cm, AllowDrop = true, AllowsTransparency = true, Background = Brushes.Transparent, Title = fence["Title"], ShowInTaskbar = false, WindowStyle = WindowStyle.None, Content = cborder, ResizeMode = ResizeMode.CanResize, Width = fence["Width"], Height = fence["Height"], Top = fence["Y"], Left = fence["X"] };
+                //miRF.Click += (sender, e) => {
+                //    fence.Remove();
+                //    win.Close();
+                //    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                //};
                 miRF.Click += (sender, e) => {
+                    // Check if the fence is a portal fence
+                    bool isPortalFence = fence["ItemsType"].ToString() == "Portal";
+
+                    // Remove the fence from the data
                     fence.Remove();
                     win.Close();
+
+                    // Only delete shortcut files if this is NOT a portal fence
+                    if (!isPortalFence)
+                    {
+                        foreach (dynamic icon in fence["Items"])
+                        {
+                            string filePath = (string)icon["Filename"];
+
+                            // Check if the file is a shortcut (.lnk)
+                            if (Path.GetExtension(filePath).ToLower() == ".lnk" && File.Exists(filePath))
+                            {
+                                try
+                                {
+                                    File.Delete(filePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Error deleting shortcut file: {ex.Message}");
+                                }
+                            }
+                        }
+                    }
+
+                    // Save the updated fence data
                     File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
+                //miNF.Click += (sender, e) => {
+                //    Newtonsoft.Json.Linq.JObject fnc = new(new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"), new Newtonsoft.Json.Linq.JProperty("Width", 300), new Newtonsoft.Json.Linq.JProperty("Height", 150), new Newtonsoft.Json.Linq.JProperty("X", 0), new Newtonsoft.Json.Linq.JProperty("Y", 0), new Newtonsoft.Json.Linq.JProperty("ItemsType", "Data"), new Newtonsoft.Json.Linq.JProperty("Items", new Newtonsoft.Json.Linq.JArray()));
+                //    fencedata.Add(fnc);
+                //    createFence(fnc);
+                //    File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                //};
                 miNF.Click += (sender, e) => {
-                    Newtonsoft.Json.Linq.JObject fnc = new(new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"), new Newtonsoft.Json.Linq.JProperty("Width", 300), new Newtonsoft.Json.Linq.JProperty("Height", 150), new Newtonsoft.Json.Linq.JProperty("X", 0), new Newtonsoft.Json.Linq.JProperty("Y", 0), new Newtonsoft.Json.Linq.JProperty("ItemsType", "Data"), new Newtonsoft.Json.Linq.JProperty("Items", new Newtonsoft.Json.Linq.JArray()));
+                    // Get the mouse position in screen coordinates
+                    var mousePosition = System.Windows.Forms.Cursor.Position;
+
+                    // Create a new fence at the mouse position
+                    Newtonsoft.Json.Linq.JObject fnc = new(
+                        new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"),
+                        new Newtonsoft.Json.Linq.JProperty("Width", 300),
+                        new Newtonsoft.Json.Linq.JProperty("Height", 150),
+                        new Newtonsoft.Json.Linq.JProperty("X", mousePosition.X), // Set X to mouse position (screen coordinates)
+                        new Newtonsoft.Json.Linq.JProperty("Y", mousePosition.Y), // Set Y to mouse position (screen coordinates)
+                        new Newtonsoft.Json.Linq.JProperty("ItemsType", "Data"),
+                        new Newtonsoft.Json.Linq.JProperty("Items", new Newtonsoft.Json.Linq.JArray())
+                    );
+
+                    // Add the new fence to the data and create it
                     fencedata.Add(fnc);
                     createFence(fnc);
+
+                    // Save the updated fence data
                     File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
+                //miNP.Click += (sender, e) => {
+                //    using var dialog = new System.Windows.Forms.FolderBrowserDialog
+                //    {
+                //        Description = "Select Folder For Portal",
+                //        UseDescriptionForTitle = true,
+                //        ShowNewFolderButton = true
+                //    };
+                //    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                //    {
+                //        Newtonsoft.Json.Linq.JObject fnc = new(new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"), new Newtonsoft.Json.Linq.JProperty("Width", 300), new Newtonsoft.Json.Linq.JProperty("Height", 150), new Newtonsoft.Json.Linq.JProperty("X", 0), new Newtonsoft.Json.Linq.JProperty("Y", 0), new Newtonsoft.Json.Linq.JProperty("ItemsType", "Portal"), new Newtonsoft.Json.Linq.JProperty("Items", dialog.SelectedPath));
+
+                //        fencedata.Add(fnc);
+                //        createFence(fnc);
+                //        File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                //    }
+
+
+
+                //};
                 miNP.Click += (sender, e) => {
+                    // Get the mouse position in screen coordinates
+                    var mousePosition = System.Windows.Forms.Cursor.Position;
+
+                    // Open a folder browser dialog to select the portal folder
                     using var dialog = new System.Windows.Forms.FolderBrowserDialog
                     {
                         Description = "Select Folder For Portal",
                         UseDescriptionForTitle = true,
                         ShowNewFolderButton = true
                     };
+
                     if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        Newtonsoft.Json.Linq.JObject fnc = new(new Newtonsoft.Json.Linq.JProperty("Title", "New Fence"), new Newtonsoft.Json.Linq.JProperty("Width", 300), new Newtonsoft.Json.Linq.JProperty("Height", 150), new Newtonsoft.Json.Linq.JProperty("X", 0), new Newtonsoft.Json.Linq.JProperty("Y", 0), new Newtonsoft.Json.Linq.JProperty("ItemsType", "Portal"), new Newtonsoft.Json.Linq.JProperty("Items", dialog.SelectedPath));
+                        // Create a new portal fence at the mouse position
+                        Newtonsoft.Json.Linq.JObject fnc = new(
+                            new Newtonsoft.Json.Linq.JProperty("Title", "New Portal Fence"),
+                            new Newtonsoft.Json.Linq.JProperty("Width", 300),
+                            new Newtonsoft.Json.Linq.JProperty("Height", 150),
+                            new Newtonsoft.Json.Linq.JProperty("X", mousePosition.X), // Set X to mouse position (screen coordinates)
+                            new Newtonsoft.Json.Linq.JProperty("Y", mousePosition.Y), // Set Y to mouse position (screen coordinates)
+                            new Newtonsoft.Json.Linq.JProperty("ItemsType", "Portal"),
+                            new Newtonsoft.Json.Linq.JProperty("Items", dialog.SelectedPath)
+                        );
 
+                        // Add the new portal fence to the data and create it
                         fencedata.Add(fnc);
                         createFence(fnc);
+
+                        // Save the updated fence data
                         File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                     }
-
-
-
                 };
+
 
                 miXT.Click += (sender, e) => {
                     System.Environment.Exit(1);
@@ -359,20 +690,107 @@ namespace Birdy_Fences
                 DockPanel.SetDock(titlelabel, Dock.Top);
                 DockPanel.SetDock(titletb, Dock.Top);
                 WrapPanel wpcont = new() { AllowDrop = true };
+
+
+
+
+
+
+
+
+
                 void addicon(dynamic icon)
                 {
                     StackPanel sp = new() { Margin = new Thickness(5) };
                     sp.Width = 60;
+
+
+
+
                     ContextMenu mn = new();
                     MenuItem miE = new() { Header = "Edit" };
                     MenuItem miM = new() { Header = "Move.." };
 
                     MenuItem miRemove = new() { Header = "Remove" };
-                    miRemove.Click += (sender, e) =>
-                    {
-                        icon.Remove();
-                        wpcont.Children.Remove(sp);
-                        File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+              
+                    miRemove.Click += (sender, e) => {
+                        // Get the path of the file
+                        string filePath = (string)icon["Filename"];
+
+                        // Check if the file is a shortcut (.lnk)
+                        if (Path.GetExtension(filePath).ToLower() == ".lnk")
+                        {
+                            // Apply the zoom-out and darken effect
+                            var zoomOutAnimation = new System.Windows.Media.Animation.DoubleAnimation
+                            {
+                                To = 0.3, // Scale down to 10%
+                                Duration = TimeSpan.FromMilliseconds(400), // Animation duration
+                                FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+                            };
+
+                            var darkenAnimation = new System.Windows.Media.Animation.ColorAnimation
+                            {
+                                To = System.Windows.Media.Colors.Black, // Darken to gray
+                                Duration = TimeSpan.FromMilliseconds(400), // Animation duration
+                                FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop // Stop the animation after completion
+                            };
+
+                            // Apply the zoom-out effect to the StackPanel
+                            if (sp.RenderTransform == null || !(sp.RenderTransform is ScaleTransform))
+                            {
+                                sp.RenderTransform = new ScaleTransform(1, 1);
+                                sp.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5); // Center the transform
+                            }
+                            ((ScaleTransform)sp.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, zoomOutAnimation);
+                            ((ScaleTransform)sp.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, zoomOutAnimation);
+
+                            // Apply the darken effect to the StackPanel's background
+                            if (sp.Background == null || !(sp.Background is System.Windows.Media.SolidColorBrush))
+                            {
+                                sp.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Transparent);
+                            }
+                            ((System.Windows.Media.SolidColorBrush)sp.Background).BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, darkenAnimation);
+
+                            // Delay the removal of the icon until the animation completes
+                            var timer = new System.Windows.Threading.DispatcherTimer
+                            {
+                                Interval = TimeSpan.FromMilliseconds(200) // Match the animation duration
+                            };
+                            timer.Tick += (s, ev) =>
+                            {
+                                timer.Stop();
+
+                                // Remove the shortcut from the fence
+                                icon.Remove();
+                                wpcont.Children.Remove(sp);
+
+                                // Delete the shortcut file from the "Shortcuts" folder
+                                if (File.Exists(filePath))
+                                {
+                                    try
+                                    {
+                                        File.Delete(filePath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        MessageBox.Show($"Error deleting shortcut file: {ex.Message}");
+                                    }
+                                }
+
+                                // Save the updated fence data
+                                File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                            };
+                            timer.Start();
+                        }
+                        else
+                        {
+                            // If it's not a shortcut, just remove it from the fence without deleting the file
+                            icon.Remove();
+                            wpcont.Children.Remove(sp);
+
+                            // Save the updated fence data
+                            File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        }
                     };
                     mn.Items.Add(miE);
                     mn.Items.Add(miM);
@@ -519,22 +937,60 @@ namespace Birdy_Fences
                     {
                         UseShellExecute = true
                     };
-                    new ClickEventAdder(sp).Click += (sender, e) => {
-                     
-                      //  p.Start();
 
+                    // click event
+                    new ClickEventAdder(sp).Click += (sender, e) => {
+                        // Ensure the StackPanel has a RenderTransform
+                        if (sp.RenderTransform == null || !(sp.RenderTransform is ScaleTransform))
+                        {
+                            sp.RenderTransform = new ScaleTransform(1, 1);
+                            sp.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5); // Center the transform
+                        }
+
+                        // Ensure the StackPanel has a DropShadowEffect
+                        if (sp.Effect == null || !(sp.Effect is System.Windows.Media.Effects.DropShadowEffect))
+                        {
+                            sp.Effect = new System.Windows.Media.Effects.DropShadowEffect
+                            {
+                                Color = System.Windows.Media.Colors.Yellow, // Glow color
+                                ShadowDepth = 0, // No shadow offset
+                                BlurRadius = 20, // Glow size
+                                Opacity = 0 // Start with no glow
+                            };
+                        }
+
+                        // Zoom effect
+                        var scaleAnimation = new System.Windows.Media.Animation.DoubleAnimation
+                        {
+                            To = 1.2,
+                            Duration = TimeSpan.FromMilliseconds(100),
+                            AutoReverse = true,
+                            FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop
+                        };
+
+                        // Glow effect
+                        var glowAnimation = new System.Windows.Media.Animation.DoubleAnimation
+                        {
+                            To = 1,
+                            Duration = TimeSpan.FromMilliseconds(200),
+                            AutoReverse = true,
+                            FillBehavior = System.Windows.Media.Animation.FillBehavior.Stop
+                        };
+
+                        // Apply both animations
+                        ((ScaleTransform)sp.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+                        ((ScaleTransform)sp.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+                        ((System.Windows.Media.Effects.DropShadowEffect)sp.Effect).BeginAnimation(System.Windows.Media.Effects.DropShadowEffect.OpacityProperty, glowAnimation);
+
+                        // Start the process (existing logic)
                         try
                         {
                             p.Start();
                         }
-                        catch (Exception f)
+                        catch (Exception ex)
                         {
-                            //  Console.WriteLine(f.Message);
-                            MessageBox.Show(f.Message);
-
+                            MessageBox.Show(ex.Message);
                         }
-
-
                     };
                     wpcont.Children.Add(sp);
                 };
@@ -546,16 +1002,52 @@ namespace Birdy_Fences
                     e.Effects = DragDropEffects.Copy | DragDropEffects.Move;
                     //e.Handled = true;
                 };
+                //windrop
                 win.Drop += (object sender, DragEventArgs e) => {
                     string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                     foreach (string dt in files)
                     {
-                        Newtonsoft.Json.Linq.JObject icon = new(new Newtonsoft.Json.Linq.JProperty("Filename", dt));
-                        fence["Items"].Add(icon);
-                        addicon(icon);
+                        if (Path.GetExtension(dt).ToLower() == ".lnk") // Check if it's a shortcut
+                        {
+                            // Define the "Shortcuts" subfolder path
+                            string shortcutsFolder = Path.Combine(exedir, "Shortcuts");
+
+                            // Ensure the "Shortcuts" folder exists
+                            if (!Directory.Exists(shortcutsFolder))
+                            {
+                                Directory.CreateDirectory(shortcutsFolder);
+                            }
+
+                            // Generate a unique name for the shortcut
+                            string shortcutName = Path.GetFileNameWithoutExtension(dt);
+                            string destinationPath = Path.Combine(shortcutsFolder, shortcutName + ".lnk");
+
+                            int counter = 1;
+                            while (File.Exists(destinationPath))
+                            {
+                                destinationPath = Path.Combine(shortcutsFolder, $"{shortcutName} ({counter}).lnk");
+                                counter++;
+                            }
+
+                            // Use ShortcutManager to create a new shortcut
+                            ShortcutManager.CreateShortcut(dt, destinationPath);
+
+                            // Add the new shortcut to the fence
+                            Newtonsoft.Json.Linq.JObject icon = new(new Newtonsoft.Json.Linq.JProperty("Filename", destinationPath));
+                            fence["Items"].Add(icon);
+                            addicon(icon);
+                        }
+                        else
+                        {
+                            // Handle non-shortcut files (if needed)
+                            Newtonsoft.Json.Linq.JObject icon = new(new Newtonsoft.Json.Linq.JProperty("Filename", dt));
+                            fence["Items"].Add(icon);
+                            addicon(icon);
+                        }
                     }
                     File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
                 };
+                // end of windrop
                 void initcontent()
                 {
                     wpcont.Children.Clear();
