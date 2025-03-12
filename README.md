@@ -22,6 +22,13 @@ This fork has been **significantly enhanced and optimized** for better performan
 4. Error handlers added to detect target type.
 5. Added visual effects on icon click and icon removal.
 
+## Changes in v1.4
+
+1. More options availble on icon right click menu such: Run as administrator (when applicable), Copy path, Find target
+2. Fixed folder icon appearance which was lost in previous version.
+3. 
+4. 
+5. 
 
 ## Download
 Get the latest release from [Release pages](https://github.com/limbo666/BirdyFences/releases) 
