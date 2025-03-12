@@ -26,8 +26,8 @@ This fork has been **significantly enhanced and optimized** for better performan
 
 1. More options availble on icon right click menu such: Run as administrator (when applicable), Copy path, Find target
 2. Fixed folder icon appearance which was lost in previous version.
-3. 
-4. 
+3. Added mechanism to indicate broken link on startup with icons.
+4. Json format changed to adopt the new functions. Added routine to update existing "fences.json" files automaticaly.
 5. 
 
 ## Download
