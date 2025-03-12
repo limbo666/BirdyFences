@@ -17,8 +17,8 @@ This fork has been **significantly enhanced and optimized** for better performan
 ## Changes in v1.3
 
 1. Better management on new fence creation. The fence is now created where the mouse is located.
-2. Shortcuts are not relying in the existence of original shortcust dropped into the fence, allowing the user to get rid of the originals
-3. Shortcut execution arguments (if any) are detected and replicated.
+2. Shortcuts are not relying in the existence of original shortcuts which are dropped into the fence, this allows the user to get rid of the originals once the fence has the icon.
+3. Shortcut execution arguments (if any) are detected and replicated into fence shortcuts.
 4. Error handlers added to detect target type.
 5. Added visual effects on icon click and icon removal.
 
