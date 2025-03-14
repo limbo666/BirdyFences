@@ -28,7 +28,8 @@ This fork has been **significantly enhanced and optimized** for better performan
 2. Fixed folder icon appearance which was lost in previous version.
 3. Added mechanism to indicate broken link on startup with icons.
 4. Json format changed to adopt the new functions. Added routine to update existing "fences.json" files automaticaly.
-5. 
+5. The fences are not covering other windows when clicked.
+6. Fixed missing delete animation from icons with folder or file target.
 
 ## Download
 Get the latest release from [Release pages](https://github.com/limbo666/BirdyFences/releases) 
