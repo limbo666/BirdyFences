@@ -7,15 +7,19 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
+    <AssemblyVersion>1.4</AssemblyVersion>
+    <FileVersion>1.4</FileVersion>
+    <Version>1.4</Version>
     <ApplicationIcon>logo2.ico</ApplicationIcon>
-    <AssemblyVersion>1.1</AssemblyVersion>
-    <FileVersion>1.3</FileVersion>
-    <Version>1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="file-WhiteX.png" />
+    <None Remove="fileX.png" />
     <None Remove="folder-White.png" />
+    <None Remove="folder-WhiteX.png" />
     <None Remove="folder.png" />
+    <None Remove="folderX.png" />
     <None Remove="Resources\logo1.png" />
   </ItemGroup>
 
@@ -40,12 +44,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="file-WhiteX.png" />
+    <Resource Include="fileX.png" />
     <Resource Include="folder-White.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="folder-WhiteX.png" />
     <Resource Include="folder.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="folderX.png" />
   </ItemGroup>
 
   <ItemGroup>
