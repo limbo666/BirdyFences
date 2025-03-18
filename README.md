@@ -6,7 +6,7 @@ This fork has been **significantly enhanced and optimized** for better performan
 
 ## Changes in v1.1
 
-1. The json file moved to the same path with executable. 
+1. The `fences.json` file moved to the same path with executable. 
 2. The first fence line is created on json file during the first execution.
 3. A program icon was added to the executable. The icon updated on version 1.1
 4. Error handlers on: move action, program execution, empty json file.
@@ -24,13 +24,15 @@ This fork has been **significantly enhanced and optimized** for better performan
 
 ## Changes in v1.4
 
-1. Run as administrator (when applicable), Copy path, Find target options available on icon right click menu.
+1. Right click options for "Run as administrator" (when applicable), "Copy path", "Find target" options available on icon right click menu.
 2. Fixed folder icon appearance which was lost in previous version.
-3. Added mechanism to indicate broken links. This works on startup and checks also every 5 seconds.
-4. Json format changed to adopt the new functions. Added routine to update existing "fences.json" files automaticaly.
-5. The fences are not covering other windows when clicked.
-6. Fixed missing delete animation from icons with folder or file target.
-   
+3. Added mechanism to indicate broken links. This works on startup and checks targets also every 5 seconds.
+4. Json format changed to support the new functions. Added routine to update existing `fences.json` files automatically.
+5. Fences are not coming in front of other windows when clicked.
+6. Fixed missing "delete animation" for icons targeting folders or files.
+7. Added options form to allow user to enable/disable snap function, select tint level and fences base color. Options saved in `options.json` file.
+8. Added backup mechanism triggered manually under options window. Backup backups fences and shortcuts
+9. Added option to enable/disable logs for diagnostic purposes
 
 ## Download
 Get the latest release from [Release pages](https://github.com/limbo666/BirdyFences/releases) 
