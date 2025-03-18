@@ -7,10 +7,11 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
-    <AssemblyVersion>1.4</AssemblyVersion>
-    <FileVersion>1.4</FileVersion>
-    <Version>1.4</Version>
+    <AssemblyVersion>1.43</AssemblyVersion>
+    <FileVersion>1.43</FileVersion>
+    <Version>1.43</Version>
     <ApplicationIcon>logo2.ico</ApplicationIcon>
+    <PackageIcon>logo2.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -73,6 +74,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="logo2.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

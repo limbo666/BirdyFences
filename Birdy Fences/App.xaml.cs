@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
 using IWshRuntimeLibrary;
+using System.Windows.Threading;
 //using System.Windows.Forms;
 //using System.Drawing; // For Icon
 
@@ -33,13 +34,66 @@ namespace Birdy_Fences
 
     {
 
-        // Global variable to control snapping
         public static bool IsSnapEnabled { get; set; } = true;
+        public static int TintValue { get; set; } = 60;
+        public static string SelectedColor { get; set; } = "Gray";
+        public static bool IsLogEnabled { get; set; } = false;
+
+
+        private void LoadSettings()
+        {
+            string optionsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "options.json");
+            if (System.IO.File.Exists(optionsFilePath))
+            {
+                string jsonContent = System.IO.File.ReadAllText(optionsFilePath);
+                dynamic optionsData = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonContent);
+
+                IsSnapEnabled = optionsData.IsSnapEnabled;
+                TintValue = optionsData.TintValue;
+                SelectedColor = optionsData.SelectedColor;
+                IsLogEnabled = optionsData.IsLogEnabled;
+            }
+            else
+            {
+                SaveSettings(); // Create the file with default values if it doesn't exist
+            }
+        }
+
+        private void SaveSettings()
+        {
+            string optionsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "options.json");
+            var optionsData = new
+            {
+                IsSnapEnabled,
+                TintValue,
+                SelectedColor,
+                IsLogEnabled
+            };
+            string formattedJson = Newtonsoft.Json.JsonConvert.SerializeObject(optionsData, Newtonsoft.Json.Formatting.Indented);
+            System.IO.File.WriteAllText(optionsFilePath, formattedJson);
+        }
+
+
+
+        private DispatcherTimer _snapTimer;
+        private NonActivatingWindow _currentDraggingFence;
+
+        // Add a timer refference
+        private TargetChecker _targetChecker;
+
+
+        // Global variable to control snapping
+      //  public static bool IsSnapEnabled { get; set; } = true;
+
+        // Add a variable to control fence snapping
+        public static int snapFences { get; set; } = 1;
 
         // Constants for snapping
-        private const double SnapThreshold = 20; // Distance threshold for snapping (in pixels)
-        private const double MinGap = 10; // Minimum gap between fences (in pixels)
-
+      
+        private const double SnapDistance = 20; // Distance to snap to (in pixels)
+        private const double SnapThreshold = 30;       // 30px proximity for external snaps
+        private const double InternalSnapThreshold = 15; // 15px for internal adjustments
+        private const double MinGap = 8;              // 8px minimum between fences
 
         private System.Windows.Forms.NotifyIcon _trayIcon;
                 private System.Windows.Forms.NotifyIcon trayIcon;
@@ -62,6 +116,13 @@ namespace Birdy_Fences
             ),
             IntPtr.Zero, "SysListView32", "FolderView"
         );
+
+
+        private void SaveFencesData(dynamic fencedata, string jsonFilePath)
+        {
+            string formattedJson = Newtonsoft.Json.JsonConvert.SerializeObject(fencedata, Newtonsoft.Json.Formatting.Indented);
+            System.IO.File.WriteAllText(jsonFilePath, formattedJson);
+        }
 
         private System.Drawing.Image LoadImageFromResources(string resourcePath)
         {
@@ -125,15 +186,399 @@ namespace Birdy_Fences
             }
         }
 
+        private void LogSnapDetails(string message)
+        {
+            if (!IsLogEnabled) return; // Check if logging is enabled
+
+            string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "snap_log.txt");
+            using (StreamWriter writer = new StreamWriter(logFilePath, true))
+            {
+                writer.WriteLine($"{DateTime.Now}: {message}");
+            }
+        }
 
 
+        private (double, double) SnapToClosestFence(NonActivatingWindow currentFence, List<NonActivatingWindow> allFences)
+        {
+            if (!IsSnapEnabled || snapFences == 0) return (currentFence.Left, currentFence.Top); // Snapping is disabled
+
+            double initialX = currentFence.Left;
+            double initialY = currentFence.Top;
+            double snapX = initialX;
+            double snapY = initialY;
+
+            List<string> nearbyFences = new List<string>();
+            List<string> causingSnapFences = new List<string>();
+
+            foreach (var fence in allFences)
+            {
+                if (fence == currentFence) continue;
+
+                // Calculate the edges of the current fence
+                double currentLeft = currentFence.Left;
+                double currentRight = currentFence.Left + currentFence.Width;
+                double currentTop = currentFence.Top;
+                double currentBottom = currentFence.Top + currentFence.Height;
+
+                // Calculate the edges of the other fence
+                double otherLeft = fence.Left;
+                double otherRight = fence.Left + fence.Width;
+                double otherTop = fence.Top;
+                double otherBottom = fence.Top + fence.Height;
+
+                // Determine the appropriate snap threshold
+                double horizontalThreshold = (currentLeft >= otherLeft && currentRight <= otherRight) ? InternalSnapThreshold : SnapThreshold;
+                double verticalThreshold = (currentTop >= otherTop && currentBottom <= otherBottom) ? InternalSnapThreshold : SnapThreshold;
+
+                // Check for snapping on the left/right edges
+                if (Math.Abs(currentRight - otherLeft) <= horizontalThreshold)
+                {
+                    snapX = otherLeft - currentFence.Width - MinGap;
+                    causingSnapFences.Add(fence.Title);
+                }
+                else if (Math.Abs(currentLeft - otherRight) <= horizontalThreshold)
+                {
+                    snapX = otherRight + MinGap;
+                    causingSnapFences.Add(fence.Title);
+                }
+
+                // Check for snapping on the top/bottom edges
+                if (Math.Abs(currentBottom - otherTop) <= verticalThreshold)
+                {
+                    snapY = otherTop - currentFence.Height - MinGap;
+                    causingSnapFences.Add(fence.Title);
+                }
+                else if (Math.Abs(currentTop - otherBottom) <= verticalThreshold)
+                {
+                    snapY = otherBottom + MinGap;
+                    causingSnapFences.Add(fence.Title);
+                }
+
+                nearbyFences.Add(fence.Title);
+            }
+
+            // Ensure the new position is within valid screen coordinates
+            snapX = Math.Max(0, snapX);
+            snapY = Math.Max(0, snapY);
+
+            // Apply the snapping
+            currentFence.Left = snapX;
+            currentFence.Top = snapY;
+
+            // Log the details
+            string logMessage = $"FenceDragged: {currentFence.Title}, NearbyFences: {string.Join(", ", nearbyFences)}, " +
+                                $"CausingSnapFences: {string.Join(", ", causingSnapFences)}, " +
+                                $"FenceDraggedPosition: ({initialX}, {initialY}), " +
+                                $"FenceSnappedPosition: ({snapX}, {snapY}), " +
+                                $"ScreenSize: ({SystemParameters.PrimaryScreenWidth}, {SystemParameters.PrimaryScreenHeight})";
+            LogSnapDetails(logMessage);
+
+            return (snapX, snapY);
+        }
+
+        private void ApplyTintAndColorToFence(NonActivatingWindow fence)
+        {
+            if (fence.Content is Border border)
+            {
+                Color baseColor = GetColorFromName(SelectedColor);
+                byte alpha = (byte)(TintValue * 2.55);
+                border.Background = new SolidColorBrush(Color.FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B));
+            }
+        }
+
+        private Color GetColorFromName(string colorName)
+        {
+            return colorName switch
+            {
+                "Red" => (Color)ColorConverter.ConvertFromString("#c10338"), // Monza
+                "Green" => (Color)ColorConverter.ConvertFromString("#005618"), // Camarone
+                "Blue" => (Color)ColorConverter.ConvertFromString("#012162"), // Midnight Blue
+                "White" => (Color)ColorConverter.ConvertFromString("#fdfdff"), // Titan White
+                "Gray" => (Color)ColorConverter.ConvertFromString("#3d3d3f"), // Ship Gray
+                "Black" => (Color)ColorConverter.ConvertFromString("#0b0b0c"), // Woodsmoke
+                "Purple" => (Color)ColorConverter.ConvertFromString("#3a0b50"), // Jagger
+                "Yellow" => (Color)ColorConverter.ConvertFromString("#d8da1f"), // Sunflower
+                _ => Colors.Transparent,
+            };
+        }
+
+        private void ApplyTintToFence(NonActivatingWindow fence)
+        {
+            if (fence.Content is Border border)
+            {
+                border.Background = new SolidColorBrush(Color.FromArgb((byte)(TintValue * 2.55), 0, 0, 0));
+            }
+        }
+
+        private void ShowOptionsForm()
+        {
+            try
+            {
+                using (var frmOptions = new System.Windows.Forms.Form())
+                {
+                    // Set up the form
+                    frmOptions.Text = "Options";
+                    frmOptions.Size = new System.Drawing.Size(260, 340); // Adjust size
+                    frmOptions.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                    frmOptions.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+                    frmOptions.MaximizeBox = false;
+                    frmOptions.MinimizeBox = false;
+
+                    // Set the form icon to match the tray icon
+                    string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    frmOptions.Icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+
+                    // Create a TableLayoutPanel for central alignment
+                    var layoutPanel = new System.Windows.Forms.TableLayoutPanel
+                    {
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        ColumnCount = 1,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink,
+                        Padding = new System.Windows.Forms.Padding(10) // Add padding
+                    };
+                    layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+                    // GroupBox for Selections
+                    var groupBoxSelections = new System.Windows.Forms.GroupBox
+                    {
+                        Text = "Selections",
+                        Dock = System.Windows.Forms.DockStyle.Top,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+                    };
+                    var selectionsLayout = new System.Windows.Forms.TableLayoutPanel
+                    {
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        ColumnCount = 2,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+                    };
+                    selectionsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    selectionsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+
+                    // Enable snap function checkbox
+                    var chkEnableSnap = new System.Windows.Forms.CheckBox
+                    {
+                        Text = "Enable snap function",
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        AutoSize = true,
+                        Checked = IsSnapEnabled // Load setting
+                    };
+                    selectionsLayout.Controls.Add(chkEnableSnap, 0, 0);
+                    selectionsLayout.SetColumnSpan(chkEnableSnap, 2);
+
+                    // Tint label and numeric up down
+                    var lblTint = new System.Windows.Forms.Label
+                    {
+                        Text = "Tint",
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        AutoSize = true
+                    };
+                    var numTint = new System.Windows.Forms.NumericUpDown
+                    {
+                        Maximum = 100,
+                        Minimum = 1,
+                        Value = TintValue, // Load setting
+                        Dock = System.Windows.Forms.DockStyle.Fill
+                    };
+                    selectionsLayout.Controls.Add(lblTint, 0, 1);
+                    selectionsLayout.Controls.Add(numTint, 1, 1);
+
+                    // Color label and dropdown menu
+                    var lblColor = new System.Windows.Forms.Label
+                    {
+                        Text = "Color",
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        AutoSize = true
+                    };
+                    var cmbColor = new System.Windows.Forms.ComboBox
+                    {
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+                    };
+                    cmbColor.Items.AddRange(new string[] { "Gray", "Black", "White", "Green", "Purple", "Yellow", "Red", "Blue" });
+                    cmbColor.SelectedItem = SelectedColor; // Load setting
+                    selectionsLayout.Controls.Add(lblColor, 0, 2);
+                    selectionsLayout.Controls.Add(cmbColor, 1, 2);
+
+                    groupBoxSelections.Controls.Add(selectionsLayout);
+                    layoutPanel.Controls.Add(groupBoxSelections);
+
+                    // GroupBox for Tools
+                    var groupBoxTools = new System.Windows.Forms.GroupBox
+                    {
+                        Text = "Tools",
+                        Dock = System.Windows.Forms.DockStyle.Top,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+                    };
+                    var toolsLayout = new System.Windows.Forms.TableLayoutPanel
+                    {
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        ColumnCount = 1,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+                    };
+                    toolsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+                    // Enable log checkbox
+                    var chkEnableLog = new System.Windows.Forms.CheckBox
+                    {
+                        Text = "Enable log",
+                        Dock = System.Windows.Forms.DockStyle.Fill,
+                        AutoSize = true,
+                        Checked = IsLogEnabled // Load setting
+                    };
+                    toolsLayout.Controls.Add(chkEnableLog, 0, 0);
+
+                    // Backup button
+                    var btnBackup = new System.Windows.Forms.Button
+                    {
+                        Text = "Backup",
+                        AutoSize = true,
+                        Width = 80,
+                        Height = 30,
+                        Anchor = System.Windows.Forms.AnchorStyles.None
+                    };
+                    btnBackup.Click += (s, ev) => BackupData(); // Wire up the Backup button
+                    toolsLayout.Controls.Add(btnBackup, 0, 1);
+                    toolsLayout.SetCellPosition(btnBackup, new System.Windows.Forms.TableLayoutPanelCellPosition(0, 1));
+                    toolsLayout.SetColumnSpan(btnBackup, 1);
+
+                    groupBoxTools.Controls.Add(toolsLayout);
+                    layoutPanel.Controls.Add(groupBoxTools);
+
+                    // Cancel and Save buttons
+                    var buttonsLayout = new System.Windows.Forms.TableLayoutPanel
+                    {
+                        Dock = System.Windows.Forms.DockStyle.Bottom,
+                        ColumnCount = 2,
+                        AutoSize = true,
+                        AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+                    };
+                    buttonsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    buttonsLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+
+                    var btnCancel = new System.Windows.Forms.Button
+                    {
+                        Text = "Cancel",
+                        AutoSize = true,
+                        Width = 80,
+                        Height = 30,
+                        Anchor = System.Windows.Forms.AnchorStyles.Right
+                    };
+                    btnCancel.Click += (s, ev) => frmOptions.Close();
+                    var btnSave = new System.Windows.Forms.Button
+                    {
+                        Text = "Save",
+                        AutoSize = true,
+                        Width = 80,
+                        Height = 30,
+                        Anchor = System.Windows.Forms.AnchorStyles.Right
+                    };
+                    btnSave.Click += (s, ev) =>
+                    {
+                        // Save settings
+                        IsSnapEnabled = chkEnableSnap.Checked;
+                        TintValue = (int)numTint.Value;
+                        SelectedColor = cmbColor.SelectedItem.ToString();
+                        IsLogEnabled = chkEnableLog.Checked;
+
+                        SaveSettings(); // Save to JSON
+                                        // Apply TintValue to all fences
+                        //foreach (var fence in Application.Current.Windows.OfType<NonActivatingWindow>())
+                        //{
+                        //    ApplyTintToFence(fence);
+                        //}
+
+                        // Apply TintValue and SelectedColor to all fences
+                        foreach (var fence in Application.Current.Windows.OfType<NonActivatingWindow>())
+                        {
+                            ApplyTintAndColorToFence(fence);
+                        }
+
+                        frmOptions.Close();
+                    };
+                    buttonsLayout.Controls.Add(btnCancel, 0, 0);
+                    buttonsLayout.Controls.Add(btnSave, 1, 0);
+
+                    layoutPanel.Controls.Add(buttonsLayout);
+
+                    // Add the layout panel to the form
+                    frmOptions.Controls.Add(layoutPanel);
+
+                    // Show the form as a modal dialog
+                    frmOptions.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                System.Windows.Forms.MessageBox.Show($"An error occurred: {ex.Message}", "Error",
+                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+
+
+
+        private void BackupData()
+        {
+            try
+            {
+                string exePath = Assembly.GetEntryAssembly().Location;
+                string exedir = Path.GetDirectoryName(exePath);
+                string jsonFilePath = Path.Combine(exedir, "fences.json");
+                string shortcutsFolderPath = Path.Combine(exedir, "Shortcuts");
+                string backupsFolderPath = Path.Combine(exedir, "Backups");
+
+                // Create the "Backups" folder if it doesn't exist
+                if (!Directory.Exists(backupsFolderPath))
+                {
+                    Directory.CreateDirectory(backupsFolderPath);
+                }
+
+                // Create a new backup folder with the current datetime
+                string backupFolderName = DateTime.Now.ToString("yyMMddHHmm") + "_backup";
+                string backupFolderPath = Path.Combine(backupsFolderPath, backupFolderName);
+                Directory.CreateDirectory(backupFolderPath);
+
+                // Copy the "fences.json" file
+                string backupJsonFilePath = Path.Combine(backupFolderPath, "fences.json");
+                System.IO.File.Copy(jsonFilePath, backupJsonFilePath, true);
+
+                // Copy the "Shortcuts" folder
+                string backupShortcutsFolderPath = Path.Combine(backupFolderPath, "Shortcuts");
+                if (Directory.Exists(shortcutsFolderPath))
+                {
+                    Directory.CreateDirectory(backupShortcutsFolderPath);
+                    foreach (string dirPath in Directory.GetDirectories(shortcutsFolderPath, "*", SearchOption.AllDirectories))
+                    {
+                        Directory.CreateDirectory(dirPath.Replace(shortcutsFolderPath, backupShortcutsFolderPath));
+                    }
+                    foreach (string newPath in Directory.GetFiles(shortcutsFolderPath, "*.*", SearchOption.AllDirectories))
+                    {
+                        System.IO.File.Copy(newPath, newPath.Replace(shortcutsFolderPath, backupShortcutsFolderPath), true);
+                    }
+                }
+
+                MessageBox.Show("Backup completed successfully.", "Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred during backup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-
-
-
+            //_snapTimer = new DispatcherTimer
+            //{
+            //    Interval = TimeSpan.FromMilliseconds(100)
+            //};
+            //_snapTimer.Tick += SnapTimer_Tick;
+            LoadSettings();
 
             //   ListEmbeddedResources(); // Call the method to list resources
             // Initialize NotifyIcon
@@ -209,6 +654,12 @@ namespace Birdy_Fences
             }
 
 
+            // Add "Options" menu item
+            var optionsMenuItem = new System.Windows.Forms.ToolStripMenuItem("Options");
+            optionsMenuItem.Click += (s, ev) => ShowOptionsForm();
+            trayMenu.Items.Add(optionsMenuItem);
+
+
 
             var aboutMenuItem = new System.Windows.Forms.ToolStripMenuItem("About");
             aboutMenuItem.Click += (s, ev) =>
@@ -263,9 +714,10 @@ namespace Birdy_Fences
                         layoutPanel.Controls.Add(labelTitle);
 
                         // Add label for version
+                        var version = Assembly.GetExecutingAssembly().GetName().Version;
                         var labelVersion = new System.Windows.Forms.Label
                         {
-                            Text = "ver 1.4",
+                            Text = $"ver {version}",
                             Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold),
                             TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
                             Dock = System.Windows.Forms.DockStyle.Fill,
@@ -351,6 +803,17 @@ namespace Birdy_Fences
             trayMenu.Items.Add(aboutMenuItem);
 
 
+            // Initialize and start the TargetChecker
+            _targetChecker = new TargetChecker(1000); // Check every 1 second
+            _targetChecker.Start();
+
+     
+
+            //// Apply TintValue to all fences on startup
+            //foreach (var fence in Application.Current.Windows.OfType<NonActivatingWindow>())
+            //{
+            //    ApplyTintToFence(fence);
+            //}
 
 
 
@@ -364,38 +827,9 @@ namespace Birdy_Fences
 
 
 
-            //string exePath = Assembly.GetEntryAssembly().Location;
-            //string exedir = Path.GetDirectoryName(exePath);
 
-
-            //string defaultJson = "[{\"Title\":\"New Fence\",\"X\":20,\"Y\":20,\"Width\":200,\"Height\":200,\"ItemsType\":\"Data\",\"Items\":[]}]";
-            //string jsonFilePath = Path.Combine(exedir, "fences.json");
-
-            //if (!System.IO.File.Exists(jsonFilePath))
-            //{
-            //    // File doesn't exist, write the default content
-            //    System.IO.File.WriteAllText(jsonFilePath, defaultJson);
-            //}
-            //else
-            //{
-            //    // File exists, check if it is empty or contains only []
-            //    string jsonContent = System.IO.File.ReadAllText(jsonFilePath).Trim();
-            //    if (string.IsNullOrEmpty(jsonContent) || jsonContent == "[]" || jsonContent == "{}")
-            //    {
-            //        // File is empty or has invalid/empty JSON, replace with default
-            //        System.IO.File.WriteAllText(jsonFilePath, defaultJson);
-            //    }
-            //}
-
-            //// Now read the JSON file into `fencedata`
-            //dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(System.IO.File.ReadAllText(jsonFilePath));
-
-
-            // THIS IS THE CODE THAT WORKS
 
             //      dynamic fencedata = Newtonsoft.Json.JsonConvert.DeserializeObject(File.ReadAllText(exedir + "\\fences.json"));
-
-
             void createFence(dynamic fence)
             {
                 DockPanel dp = new();
@@ -446,7 +880,7 @@ namespace Birdy_Fences
                     }
 
                     // Save the updated fence data
-                    System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
                 };
 
                 miNF.Click += (sender, e) =>
@@ -470,7 +904,7 @@ namespace Birdy_Fences
                     createFence(fnc);
 
                     // Save the updated fence data
-                    System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
                 };
 
                 miNP.Click += (sender, e) =>
@@ -504,7 +938,7 @@ namespace Birdy_Fences
                         createFence(fnc);
 
                         // Save the updated fence data
-                        System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
                     }
                 };
 
@@ -532,7 +966,16 @@ namespace Birdy_Fences
                         titlelabel.Visibility = Visibility.Collapsed;
                         titletb.Visibility = Visibility.Visible;
                         titletb.Text = (string)titlelabel.Content;
+                        titletb.Focus(); // Set focus to the TextBox
+                        titletb.SelectAll(); // Select all text in the TextBox
+                        win.EnableFocusPrevention(false); // Disable focus prevention
                     }
+                };
+                titletb.LostFocus += (sender, e) =>
+                {
+                    titlelabel.Visibility = Visibility.Visible;
+                    titletb.Visibility = Visibility.Collapsed;
+                    win.EnableFocusPrevention(true); // Re-enable focus prevention
                 };
                 titletb.KeyDown += (object sender, KeyEventArgs e) =>
                 {
@@ -542,19 +985,21 @@ namespace Birdy_Fences
                         titletb.Visibility = Visibility.Collapsed;
                         titlelabel.Content = titletb.Text;
                         fence["Title"] = titletb.Text;
-                        System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                        SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
+                        win.EnableFocusPrevention(true); // Re-enable focus prevention
                     }
                     else if (e.Key == Key.Escape)
                     {
                         titlelabel.Visibility = Visibility.Visible;
                         titletb.Visibility = Visibility.Collapsed;
+                        win.EnableFocusPrevention(true); // Re-enable focus prevention
                     }
                 };
                 titlelabel.MouseUp += (object sender, MouseButtonEventArgs e) =>
                 {
                     fence["Y"] = win.Top;
                     fence["X"] = win.Left;
-                    System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
                 };
                 win.SizeChanged += (sender, e) =>
                 {
@@ -562,11 +1007,13 @@ namespace Birdy_Fences
                     fence["Height"] = win.ActualHeight;
                     fence["Y"] = win.Top;
                     fence["X"] = win.Left;
-                    System.IO.File.WriteAllText(exedir + "\\fences.json", Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    SaveFencesData(fencedata, Path.Combine(exedir, "fences.json"));
                 };
                 DockPanel.SetDock(titlelabel, Dock.Top);
                 DockPanel.SetDock(titletb, Dock.Top);
                 WrapPanel wpcont = new() { AllowDrop = true };
+
+
 
 
 
@@ -726,51 +1173,91 @@ namespace Birdy_Fences
                     // Assign the context menu to the StackPanel
                     sp.ContextMenu = mn;
 
-                    // Add the icon image
-
-                    //Image ico = new() { Width = 40, Height = 40, Margin = new Thickness(5) };
-                    //string filePath = (string)icon["Filename"];
-
-                    //// Check if the path exists
-                    //bool pathExists = System.IO.Directory.Exists(filePath) || System.IO.File.Exists(filePath);
-                    //bool isFolder = pathExists ? System.IO.Directory.Exists(filePath) : (bool)icon["IsFolder"];
-
-                    //if (pathExists)
-                    //{
-                    //    if (isFolder)
-                    //    {
-                    //        // Existing folder
-                    //        ico.Source = new BitmapImage(new Uri("pack://application:,,,/folder-White.png"));
-                    //    }
-                    //    else
-                    //    {
-                    //        // Existing file
-                    //        try
-                    //        {
-                    //            ico.Source = icon["DisplayIcon"] == null
-                    //                ? System.Drawing.Icon.ExtractAssociatedIcon(filePath).ToImageSource()
-                    //                : new BitmapImage(new Uri((string)icon["DisplayIcon"], UriKind.Relative));
-                    //        }
-                    //        catch
-                    //        {
-                    //            ico.Source = new BitmapImage(new Uri("pack://application:,,,/file-WhiteX.png"));
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    // Missing item: use "X" icon based on IsFolder
-                    //    ico.Source = isFolder
-                    //        ? new BitmapImage(new Uri("pack://application:,,,/folder-WhiteX.png"))
-                    //        : new BitmapImage(new Uri("pack://application:,,,/file-WhiteX.png"));
-                    //}
-
-                    //sp.Children.Add(ico);
+           
 
 
 
                     Image ico = new() { Width = 40, Height = 40, Margin = new Thickness(5) };
                     string filePath = (string)icon["Filename"];
+
+
+                    //_targetChecker.AddCheckAction(filePath, () =>
+                    //{
+                    //    bool pathExists = Directory.Exists(filePath) || System.IO.File.Exists(filePath);
+                    //    bool isFolder = Directory.Exists(filePath);
+
+                    //    // Update the icon based on the existence of the file/folder
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        if (pathExists)
+                    //        {
+                    //            // Update to existing icon
+                    //            ico.Source = isFolder
+                    //                ? new BitmapImage(new Uri("pack://application:,,,/folder-White.png"))
+                    //                : System.Drawing.Icon.ExtractAssociatedIcon(filePath).ToImageSource();
+                    //        }
+                    //        else
+                    //        {
+                    //            // Update to missing icon
+                    //            ico.Source = isFolder
+                    //                ? new BitmapImage(new Uri("pack://application:,,,/folder-WhiteX.png"))
+                    //                : new BitmapImage(new Uri("pack://application:,,,/file-WhiteX.png"));
+                    //        }
+                    //    });
+                    //}, Directory.Exists(filePath));
+
+                    _targetChecker.AddCheckAction(filePath, () =>
+                    {
+                        // Get the original "IsFolder" value from the icon's data
+                        bool isFolder = (bool)icon["IsFolder"]; // <-- KEY CHANGE
+
+                        bool pathExists = isFolder
+                            ? Directory.Exists(filePath)
+                            : System.IO.File.Exists(filePath);
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (pathExists)
+                            {
+                                ico.Source = isFolder
+                                    ? new BitmapImage(new Uri("pack://application:,,,/folder-White.png"))
+                                    : System.Drawing.Icon.ExtractAssociatedIcon(filePath).ToImageSource();
+                            }
+                            else
+                            {
+                                ico.Source = isFolder
+                                    ? new BitmapImage(new Uri("pack://application:,,,/folder-WhiteX.png"))
+                                    : new BitmapImage(new Uri("pack://application:,,,/file-WhiteX.png"));
+                            }
+                        });
+                    }, isFolder: (bool)icon["IsFolder"]); // <-- Pass the original value
+
+
+                    //_targetChecker.AddCheckAction(filePath, () =>
+                    //{
+                    //    bool pathExists = Directory.Exists(filePath) || System.IO.File.Exists(filePath);
+                    //    bool isFolder = Directory.Exists(filePath);
+
+                    //    // Update the icon based on the existence of the file/folder
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        if (pathExists)
+                    //        {
+                    //            // Update to existing icon
+                    //            ico.Source = isFolder
+                    //                ? new BitmapImage(new Uri("pack://application:,,,/folder-White.png"))
+                    //                : System.Drawing.Icon.ExtractAssociatedIcon(filePath).ToImageSource();
+                    //        }
+                    //        else
+                    //        {
+                    //            // Update to missing icon
+                    //            ico.Source = isFolder
+                    //                ? new BitmapImage(new Uri("pack://application:,,,/folder-WhiteX.png"))
+                    //                : new BitmapImage(new Uri("pack://application:,,,/file-WhiteX.png"));
+                    //        }
+                    //    });
+                    //}, Directory.Exists(filePath));
+
 
                     // Check if the item is part of a portal fence
                     bool isPortalFence = fence["ItemsType"]?.ToString() == "Portal";
@@ -1216,27 +1703,69 @@ namespace Birdy_Fences
                 initcontent();
                 ScrollViewer wpcontscr = new() { Content = wpcont, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
                 dp.Children.Add(wpcontscr);
-                win.Show();
-                win.Loaded += (sender, e) => SetWindowLong(new WindowInteropHelper(win).Handle, GWL_HWNDPARENT, hprog);
+                  win.Show();
+                  win.Loaded += (sender, e) => SetWindowLong(new WindowInteropHelper(win).Handle, GWL_HWNDPARENT, hprog);
+               
+
+                // Add snapping logic
+
+                win.MouseMove += (sender, e) =>
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        _currentDraggingFence = win;
+                    }
+                };
+
+                win.MouseUp += (sender, e) =>
+                {
+                    if (e.ChangedButton == MouseButton.Left)
+                    {
+                        var (newLeft, newTop) = SnapToClosestFence(win, Application.Current.Windows.OfType<NonActivatingWindow>().ToList());
+                        _currentDraggingFence = null;
+
+                        // Update the JSON with the new position
+                        fence["X"] = newLeft;
+                        fence["Y"] = newTop;
+                        string exePath = Assembly.GetEntryAssembly().Location;
+                        string exedir = Path.GetDirectoryName(exePath);
+                        string jsonFilePath = Path.Combine(exedir, "fences.json");
+                        System.IO.File.WriteAllText(jsonFilePath, Newtonsoft.Json.JsonConvert.SerializeObject(fencedata));
+                    }
+                };
+
+
+
+                // win.ShowWithoutActivation();
+                //   win.Loaded += (sender, e) => SetWindowLong(new WindowInteropHelper(win).Handle, GWL_HWNDPARENT, hprog);
+                // Console.WriteLine($"Fence {fence["Title"]} created and shown.");
+                //  MessageBox.Show($"Fence {fence["Title"]} created and shown.","Info", MessageBoxButton.OK);
+
+
+              //  // Apply TintValue to the new fence
+               // ApplyTintToFence(win);
+                // Apply TintValue and SelectedColor to the new fence
+                ApplyTintAndColorToFence(win);
+
             }
-
-
-
-
 
 
             foreach (dynamic fence in fencedata)
             {
                 createFence(fence);
             }
+            // Apply TintValue and SelectedColor to all fences on startup
+            foreach (var fence in Application.Current.Windows.OfType<NonActivatingWindow>())
+            {
+                ApplyTintAndColorToFence(fence);
+            }
+
+
+
         }
-      
-        
-        
-               
-        
-        
-        
+
+
+
         protected override void OnExit(ExitEventArgs e)
         {
            // _trayIcon.Dispose();
