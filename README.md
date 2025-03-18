@@ -11,8 +11,8 @@ Lot of new options added and the program is overall easier to use and manage.
 2. The first fence line is created on json file during the first execution.
 3. A program icon was added to the executable. The icon updated on version 1.1
 4. Error handlers on: move action, program execution, empty json file.
-5. Added minimal about screen.
-6. Tray icon.
+5. Added a minimal about screen.
+6. Tray icon to indicate running application.
 7. Program exit option on right click and tray context menu.
 
 ## Changes in v1.3
@@ -40,9 +40,15 @@ Get the latest release from [Release pages](https://github.com/limbo666/BirdyFen
 
 
 ## Screenshots
+![image](https://github.com/user-attachments/assets/ce3fc0cd-5213-4b6e-8405-2c443578ef95)
+
+![image](https://github.com/user-attachments/assets/2d87c0e7-ec6b-4905-a3d9-c9dd922e5070)
+
 ![image](https://github.com/user-attachments/assets/3aa93df9-1a1c-4993-8dac-bd3c918b4bfe)
 
 ![image](https://github.com/user-attachments/assets/1cd9a855-8d91-46f8-be56-9e47b2040972)
+
+![image](https://github.com/user-attachments/assets/713f3a7a-ff1a-449d-900e-91f8ab83fd24)
 
 
 
