@@ -26,13 +26,13 @@ This fork has been **significantly enhanced and optimized** for better performan
 
 1. Right click options for "Run as administrator" (when applicable), "Copy path", "Find target" options available on icon right click menu.
 2. Fixed folder icon appearance which was lost in previous version.
-3. Added mechanism to indicate broken links. This works on startup and checks targets also every 5 seconds.
+3. Added function to indicate broken links. This works on startup and checks targets also every second.
 4. Json format changed to support the new functions. Added routine to update existing `fences.json` files automatically.
 5. Fences are not coming in front of other windows when clicked.
 6. Fixed missing "delete animation" for icons targeting folders or files.
-7. Added options form to allow user to enable/disable snap function, select tint level and fences base color. Options saved in `options.json` file.
-8. Added backup mechanism triggered manually under options window. Backup backups fences and shortcuts
-9. Added option to enable/disable logs for diagnostic purposes
+7. Added options form to allow user to enable/disable snap function, select tint level and select fences base color. Options saved in `options.json` file.
+8. Added backup mechanism triggered manually under options window. Backup saves fences settings and shortcuts into backups subfolder.
+9. Added option to enable/disable logs for diagnostic purposes.
 
 ## Download
 Get the latest release from [Release pages](https://github.com/limbo666/BirdyFences/releases) 
