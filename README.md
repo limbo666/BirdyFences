@@ -1,8 +1,9 @@
 # BirdyFences
 ![logo1](https://github.com/user-attachments/assets/279284fd-2ba2-4175-b32b-f5868cc70c7b)
 
-BirdyFences is alternative to the StarDock's Fences originaly created by HAKANKOKCU <br>
+BirdyFences is alternative to the StarDock's Fences originaly created by HakanKokcu <br>
 This fork has been **significantly enhanced and optimized** for better performance and stability.
+Lot of new options added and the program is overall easier to use and manage. 
 
 ## Changes in v1.1
 
