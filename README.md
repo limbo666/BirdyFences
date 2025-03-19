@@ -25,7 +25,7 @@ Lot of new options added and the program is overall easier to use and manage.
 
 ## Changes in v1.4
 
-1. Right click options for "Run as administrator" (when applicable), "Copy path", "Find target" options available on icon right click menu.
+1. Right click options for "Run as administrator" (when applicable), "Copy path", "Find target" options available on icon context menu.
 2. Fixed folder icon appearance which was lost in previous version.
 3. Added function to indicate broken links. This works on startup and checks targets also every second.
 4. Json format changed to support the new functions. Added routine to update existing `fences.json` files automatically.
