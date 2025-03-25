@@ -1,3 +1,8 @@
+### Development is frozen!
+If you need a newer version use **Desktop Fences +**.<br>
+**Desktop Fences +** is based on Birdy Fences but has been improved more and is still maintained.<br> 
+Visit: https://github.com/limbo666/DesktopFences 
+
 # BirdyFences
 ![logo1](https://github.com/user-attachments/assets/279284fd-2ba2-4175-b32b-f5868cc70c7b)
 
